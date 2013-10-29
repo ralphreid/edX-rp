@@ -11,7 +11,12 @@ group :development, :test do
   # gem 'ruby-debug19'
   gem 'debugger'
   gem 'debugger-linecache'
-
+  gem 'pry-rails'
+  gem 'pry-byebug'
+  gem 'pry-stack_explorer'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'meta_request'
 end
 
 group :production do
