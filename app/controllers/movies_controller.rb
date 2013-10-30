@@ -7,10 +7,14 @@ class MoviesController < ApplicationController
   end
 
   def index
-    sort_string = " #{params[:column]} #{ params[:sort]}"
-    @movies = Movie.order(sort_string)
+    @all_ratings = ['G','PG','PG-13','R']
+    @movies = get_movies_filtered(params)
     @sort_column = params[:column]
     @sort_order = params[:sort]
+    @selected_ratings = (params[:ratings] && params[:ratings].keys) || session[:rating_keys] || []
+    session[:sort_column] = @sort_column
+    session[:sort_order] = @sort_order
+    session[:rating_keys] = params[:ratings].keys if params[:ratings]
   end
 
   def new
@@ -41,4 +45,19 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
+
+  def get_movies_filtered params
+    puts session
+
+    sort_order = params[:sort] || session[:sort_order]
+    sort_column = params[:column] || session[:sort_column]
+    sort_string = "#{sort_column} #{ sort_order}"
+    rating_criteria =  (params[:ratings] && params[:ratings].keys) || session[:rating_keys]
+    movies = Movie.order(sort_string)
+    if rating_criteria.present?
+      return movies.where(:rating => rating_criteria) 
+    else
+      return movies
+    end
+  end
 end
